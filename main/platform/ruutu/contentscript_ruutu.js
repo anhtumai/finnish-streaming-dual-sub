@@ -90,10 +90,6 @@ openDatabase().then(db => {
     console.error("FinnishStreamingDualSubExtension: Failed to established connection to indexDB: ", error);
   })
 
-// Track text tracks hidden by extension so we can restore them when dual sub is disabled
-/** @type {Set<TextTrack>} */
-const tracksHiddenByExtension = new Set();
-
 // ==================================
 // END SECTION
 // ==================================
@@ -205,6 +201,110 @@ const translationQueue = new TranslationQueue();
 // ==================================
 // SECTION 3: UI MANIPULATION UTILS
 // ==================================
+
+/**
+ * Check if a node is Ruutu's native subtitle overlay or the cue span inside it.
+ * @param {Node} node
+ * @returns {boolean}
+ */
+function isElementRelatedToSubtitleOverlay(node) {
+  if (node.nodeType !== Node.ELEMENT_NODE) { return false; }
+  const element = /** @type {Element} */ (node);
+  return !!(element.className?.includes?.("rp-subtitle-overlay") || element.className?.includes?.("rp-cue"));
+}
+
+/**
+ * In Ruutu, original subtitle is diplayed in this custom html element
+ * <div class="rp-subtitle-overlay rp-1iq616x" style="font-size: 23.975px;">
+ *    <span class="rp-cue rp-1iq616x">
+ *      Esimerkki
+ *    </span>
+ * </div>
+ * We want to monitor any changes happening to this html element and sync to our
+ * `finnish-subtitle-row`
+ * 
+ * @param {MutationRecord} mutation
+ * @returns {boolean}
+ */
+function isMutationRelatedToSubtitleOverlay(mutation) {
+  try {
+    if (isElementRelatedToSubtitleOverlay(mutation.target)) {
+      return true;
+    }
+    for (const node of Array.from(mutation.addedNodes)) {
+      if (isElementRelatedToSubtitleOverlay(node)) {
+        return true;
+      }
+    }
+
+    for (const node of Array.from(mutation.removedNodes)) {
+      if (isElementRelatedToSubtitleOverlay(node)) {
+        return true;
+      }
+    }
+
+    return false;
+  } catch (error) {
+    console.warn("FinnishStreamingDualSubExtension: Catch error checking mutation related to subtitle overlay:", error);
+    return false;
+  }
+}
+
+/**
+ * Render dual subtitles when there is mutation on original subtitles wrapper
+ * Hide the original subtitles wrapper and create another div for displaying translated subtitles
+ * along with original Finnish subtitles.
+ *
+ * @returns {void}
+ */
+function renderDualSubtitles() {
+  const finnishSubRow = document.getElementById('finnish-subtitle-row');
+  const targetLanguageSubRow = document.getElementById('target-language-subtitle-row');
+  if (!finnishSubRow || !targetLanguageSubRow) {
+    console.error(
+      "FinnishStreamingDualSubExtension: Elements with ids " +
+      "'finnish-subtitle-row' and 'target-language-subtitle-row' must be present"
+    );
+    return;
+  }
+  const cueElements = Array.from(document.querySelectorAll('.rp-cue'));
+
+  if (cueElements.length === 0) {
+    finnishSubRow.textContent = "";
+    targetLanguageSubRow.textContent = "";
+    return;
+  }
+
+  const finnishSubtitleTexts = cueElements.map(cueElement => cueElement.textContent || "");
+
+  const translationKeys = finnishSubtitleTexts.map(
+    finnishSubtitleText => toTranslationKey(finnishSubtitleText)
+  );
+
+  const targetLanguageTexts = translationKeys.map(
+    translationKey => sharedTranslationMap.get(translationKey)
+      || sharedTranslationErrorMap.get(translationKey)
+      || "Translating ..."
+  );
+
+  finnishSubRow.textContent = finnishSubtitleTexts
+    .join(". ")
+    .replace(/\n/g, ' ')
+    .replace(/\s+/g, ' ');
+  targetLanguageSubRow.textContent = targetLanguageTexts
+    .join(". ")
+    .replace(/\n/g, ' ')
+    .replace(/\s+/g, ' ');
+
+  const displayedSubtitlesWrapper = document.getElementById("displayed-subtitles-rows-wrapper");
+  if (displayedSubtitlesWrapper && displayedSubtitlesWrapper.style.display !== "flex") {
+    displayedSubtitlesWrapper.style.display = "flex";
+  }
+  const originalSubtitlesWrapper = document.querySelector('[class*="rp-subtitle-overlay"]');
+  if (originalSubtitlesWrapper && originalSubtitlesWrapper.style.display !== "none") {
+    originalSubtitlesWrapper.style.display = "none";
+  }
+}
 
 /**
  * Handle dual sub behaviour based on whether the system has valid key selected.
@@ -571,97 +671,6 @@ async function addExtensionToolset() {
 }
 
 /**
- * Set up TextTrack listeners on the video element.
- * If dual sub is enabled, hides native subtitle rendering by setting track.mode = 'hidden'.
- * Also handles tracks added dynamically (HLS adds tracks after video load).
- * @param {HTMLVideoElement} video
- */
-function setupTextTrackListeners(video) {
-  /**
-   * @param {TextTrack} textTrack 
-   * Add event listener to text track if it is either caption or subtitle
-   * When cue changes, we update `finnish-subtitle-row` and `target-language-subtitle-row` accordingly
-   */
-  function addListenerToTextTrack(textTrack) {
-    if (textTrack.kind === 'captions' || textTrack.kind === 'subtitles') {
-      textTrack.addEventListener('cuechange', () => {
-        document.getElementById('dual-sub-lookup-popup')?.remove();
-
-        /** @type string[] */
-        const finnishSubtitles = [];
-        for (const activeCue of Array.from(textTrack.activeCues)) {
-          if (activeCue instanceof VTTCue) {
-            finnishSubtitles.push(activeCue.text);
-          }
-        }
-
-        if (finnishSubtitles.length > 0) {
-          const displayedFinnishSubtitles = [];
-          const targetLanguageSubtitles = [];
-          for (const finnishSubtitle of finnishSubtitles) {
-            const displayedFinnishSubtitle = finnishSubtitle.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-            const translationKey = displayedFinnishSubtitle.toLowerCase();
-            const targetLanguageSubtitle =
-              sharedTranslationMap.get(translationKey)
-              || sharedTranslationErrorMap.get(translationKey)
-              || "Translating ...";
-            displayedFinnishSubtitles.push(displayedFinnishSubtitle);
-            targetLanguageSubtitles.push(targetLanguageSubtitle);
-          }
-
-          const displayedFinnishSubtitle = displayedFinnishSubtitles.join(". ");
-          const targetLanguageSubtitle = targetLanguageSubtitles.join(". ");
-
-          // Update Finnish subtitle
-          const finnishSubRow = document.getElementById('finnish-subtitle-row');
-          if (finnishSubRow) {
-            finnishSubRow.textContent = displayedFinnishSubtitle;
-          }
-          const targetLanguageRow = document.getElementById('target-language-subtitle-row');
-          if (targetLanguageRow) {
-            targetLanguageRow.textContent = targetLanguageSubtitle;
-          }
-        } else {
-          const finnishSubRow = document.getElementById('finnish-subtitle-row');
-          const targetLanguageRow = document.getElementById('target-language-subtitle-row');
-          if (finnishSubRow) { finnishSubRow.textContent = ''; }
-          if (targetLanguageRow) { targetLanguageRow.textContent = ''; }
-        }
-      });
-    }
-  }
-  for (const track of Array.from(video.textTracks)) {
-    addListenerToTextTrack(track);
-  }
-
-  video.textTracks.addEventListener('addtrack', (e) => {
-    const track = e.track;
-    addListenerToTextTrack(track);
-  })
-
-  video.textTracks.addEventListener('change', () => {
-    const showingTrack = Array.from(video.textTracks).filter(t => t.mode === "showing")[0];
-    const isHidden = Array.from(video.textTracks).filter(t => t.mode === "hidden").length >= 1;
-    if (showingTrack) {
-      // There is one track in showing mode
-      if (dualSubEnabled) {
-        showingTrack.mode = "hidden";
-        tracksHiddenByExtension.add(showingTrack);
-      }
-    } else if (isHidden) {
-      // There is at least one track in hidden mode
-      // Ignore
-    } else {
-      // All tracks are disabled
-      const finnishSubRow = document.getElementById('finnish-subtitle-row');
-      const targetLanguageRow = document.getElementById('target-language-subtitle-row');
-      if (finnishSubRow) { finnishSubRow.textContent = ''; }
-      if (targetLanguageRow) { targetLanguageRow.textContent = ''; }
-    }
-  })
-}
-
-/**
  * Create a container div to hold Finnish subtitle and its translation.
  * Reasons for creating div:
  * - Allows displaying dual subtitles (Finnish + translation) side by side
@@ -757,12 +766,6 @@ async function initializeDualSubForVideo() {
     await addExtensionToolset();
   } catch (error) {
     console.error("FinnishStreamingDualSubExtension: Error adding dual sub toolset:", error);
-  }
-  const video = document.querySelector("video");
-  if (video) {
-    setupTextTrackListeners(video);
-  } else {
-    console.error("FinnishStreamingDualSubExtension: Video element not found during initialization");
   }
 }
 
@@ -881,6 +884,13 @@ async function loadMovieCacheAndUpdateMetadata() {
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     if (mutation.type === "childList") {
+      if (isMutationRelatedToSubtitleOverlay(mutation)) {
+        if (dualSubEnabled) {
+          document.getElementById('dual-sub-lookup-popup')?.remove();
+          renderDualSubtitles();
+        }
+        return;
+      }
       if (isVideoElementAppearMutation(mutation)) {
         initializeDualSubForVideo().then(() => { }).catch((error) => {
           console.error("FinnishStreamingDualSubExtension: Error initializing dual sub for video:", error);
@@ -961,36 +971,20 @@ document.addEventListener("change", (e) => {
    */
   if (e.target.id === "dual-sub-switch") {
     dualSubEnabled = e.target.checked;
-    const subtitleContainer = document.getElementById('displayed-subtitles-rows-wrapper');
+    const originalSubtitlesWrapper = document.querySelector('[class*="rp-subtitle-overlay"]');
     if (e.target.checked) {
-      const video = document.querySelector('video');
-      if (video) {
-        for (const track of Array.from(video.textTracks)) {
-          if (track.mode === 'showing') {
-            track.mode = 'hidden';
-            tracksHiddenByExtension.add(track);
-          }
-        }
+      if (originalSubtitlesWrapper) {
+        originalSubtitlesWrapper.style.display = "none";
       }
-      // Show subtitle container
-      if (subtitleContainer) {
-        subtitleContainer.style.display = 'flex';
-      }
+      renderDualSubtitles();
     }
     else {
-      const video = document.querySelector('video');
-      if (video) {
-        for (const track of Array.from(video.textTracks)) {
-          if (track.mode === 'hidden' && tracksHiddenByExtension.has(track)) {
-            track.mode = 'showing';
-            tracksHiddenByExtension.delete(track);
-          }
-        }
+      if (originalSubtitlesWrapper) {
+        originalSubtitlesWrapper.style.display = "flex";
       }
-      tracksHiddenByExtension.clear();
-      // Hide subtitle container
-      if (subtitleContainer) {
-        subtitleContainer.style.display = 'none';
+      const displayedSubtitlesWrapper = document.getElementById("displayed-subtitles-rows-wrapper");
+      if (displayedSubtitlesWrapper) {
+        displayedSubtitlesWrapper.style.display = "none";
       }
     }
   }

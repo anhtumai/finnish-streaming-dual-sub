@@ -296,6 +296,9 @@ function renderDualSubtitles() {
     .replace(/\n/g, ' ')
     .replace(/\s+/g, ' ');
 
+  finnishSubRow.classList.toggle('translation-blurred', shouldBlurFinnish());
+  targetLanguageSubRow.classList.toggle('translation-blurred', shouldBlurTranslation());
+
   const displayedSubtitlesWrapper = document.getElementById("displayed-subtitles-rows-wrapper");
   if (displayedSubtitlesWrapper && displayedSubtitlesWrapper.style.display !== "flex") {
     displayedSubtitlesWrapper.style.display = "flex";
@@ -597,7 +600,6 @@ async function addExtensionToolset() {
         targetLanguageSubtitleRowElement.classList.toggle('translation-blurred', shouldBlurTranslation());
       }
     }
-    // Ruutu uses video embedded subtitle. We cannot blur it. Therefore, ignore another branch for now.
   });
 
   document.addEventListener('click', (e) => {
@@ -977,6 +979,9 @@ document.addEventListener("change", (e) => {
         originalSubtitlesWrapper.style.display = "none";
       }
       renderDualSubtitles();
+      translationQueue.processQueue().then(() => { }).catch((error) => {
+        console.error("FinnishStreamingDualSubExtension: Error processing translation queue after enabling dual subtitles:", error);
+      });
     }
     else {
       if (originalSubtitlesWrapper) {

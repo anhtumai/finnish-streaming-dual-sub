@@ -935,3 +935,40 @@ const vttParser = new WebVTTParser();
         return send.apply(this, arguments);
     };
 })(XMLHttpRequest);
+
+const _fetch = window.fetch;
+window.fetch = function (...args) {
+    return _fetch.apply(this, args).then((response) => {
+        try {
+            const requestedUrl = response.url;
+            const requestedUrlWithoutQuery = requestedUrl.split("?")[0];
+            if (requestedUrlWithoutQuery.endsWith(".vtt")) {
+                response.clone().text().then((fullVttFileResponseText) => {
+                    try {
+                        const vttFileTree = vttParser.parse(fullVttFileResponseText);
+                        for (const cue of vttFileTree.cues) {
+                            if (cue && typeof cue.text === "string") {
+                                const subtitle = cue.text.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
+                                if (subtitle.length > 0) {
+                                    const customEvent = new CustomEvent("sendTranslationTextEvent", {
+                                        bubbles: true,
+                                        cancelable: true,
+                                        detail: subtitle,
+                                    });
+                                    document.dispatchEvent(customEvent);
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.error("FinnishStreamingDualSubExtension: Failed to parse VTT file:", e);
+                    }
+                }).catch((e) => {
+                    console.error("FinnishStreamingDualSubExtension: Failed to read VTT response:", e);
+                });
+            }
+        } catch (e) {
+            console.error("FinnishStreamingDualSubExtension: Unexpected error in fetch interceptor:", e);
+        }
+        return response;
+    });
+};

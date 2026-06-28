@@ -1,6 +1,8 @@
 FINNISH STREAMING DUAL SUBTITLES — Learn Finnish Through YLE Areena & Ruutu.fi 🇫🇮
 
-Master Finnish naturally by watching YLE Areena & Ruutu.fi with dual subtitles. See Finnish and your target language side-by-side in real-time, turning every video into an immersive language learning experience. 📺✨
+Master Finnish naturally by watching YLE Areena and Ruutu.fi with dual subtitles. See Finnish and your target language side-by-side in real-time, turning every video into an immersive language learning experience.
+
+Demo video: https://www.youtube.com/watch?v=O3B7BCvd99Y
 
 Check the extension landing page: https://finnish-streaming-dual-sub.netlify.app/
 
@@ -8,108 +10,85 @@ YLE Areena website: https://areena.yle.fi/tv
 Ruutu website: https://www.ruutu.fi
 
 
-WHY THIS EXTENSION? 🤔
+📖 ABOUT THIS EXTENSION
 
-Learning Finnish is challenging — spoken Finnish differs drastically from written Finnish, with unique grammar and slang. 😤 Traditional study methods don't prepare you for real conversations. 📚❌ This extension bridges that gap by letting you learn through authentic Finnish media: news, dramas, documentaries, and more. 🎬🎯
+The Challenge: Spoken Finnish differs drastically from written Finnish, with unique grammar and slang. Traditional study methods don't prepare you for real conversations. This extension bridges that gap by letting you learn through authentic Finnish media: news, dramas, documentaries, and more.
 
-
-KEY FEATURES ⭐
-
-✓ Dual Subtitle Display — See Finnish + translated subtitles simultaneously 📝
-✓ Multiple Language Support — Translate to English, Vietnamese, Japanese, Spanish, or any of 30+ languages supported by DeepL 🌍
-✓ High-Quality Translation — Powered by DeepL, known for accurate and natural translations 🎯
-✓ Smart Caching — Translations stored locally for 365 days, rewatching uses zero API calls (extends your free allowance) 💾
-✓ Multi-Token Support — Add up to 2 DeepL API tokens with visual usage tracking 🔑
-✓ One-Click Toggle — Enable/disable dual subs directly in the video player 🎛️
-✓ Shadowing Tools — Rewind/forward 3 seconds buttons + keyboard shortcuts (, and . keys) for pronunciation practice 🔄⏱️
-✓ Blur Mode — Hide Finnish, translation, or both subtitles to test yourself — hover to reveal 💪💪
-✓ Word Lookup — Select any word in a subtitle and right-click for an instant in-page translation without leaving the video 🔍
-✓ Copy Subtitle — Click the copy icon to send the current Finnish subtitle line to your clipboard 📋
-✓ Reload Subtitles — Clear cached translations for the current episode and re-translate from scratch if anything looks off 🔄
-✓ Privacy-First — All data stays in your browser. Zero tracking. 🔒
+How It Works: The extension integrates with DeepL (https://www.deepl.com), a leading translation service widely recognized for its exceptional quality. When you watch a video, Finnish subtitles are automatically translated to your chosen language in real-time and displayed below the original text.
 
 
-HOW TO USE 🚀
+✨ WHY CHOOSE THIS APP
 
-Install the extension and add your DeepL API token in settings ⚙️
-(Optional) Select your preferred translation language from the dropdown (default is English) 🌐
-Open any video on YLE Areena and Ruutu.fi 🎥
-Click the "Dual Sub" toggle in the player 🎛️
-Start learning Finnish through immersion! 🌟
+There are plenty of AI-assistant apps for language learning on the market, but their content is fairly basic. They can be useful for beginners, but they're not enough once you're past B1 level. Learning through real, unscripted Finnish media is what gets you the rest of the way.
 
 
-ℹ️ SETTING UP YOUR TRANSLATION KEY (ONE-TIME, 5-10 MINUTES)
+⭐ KEY FEATURES
 
-📖 What is a translation key (API key)?
+Check the list of key features here: https://finnish-streaming-dual-sub.netlify.app/features
 
-A translation key is like a password that allows this extension to use DeepL's translation service.
-
-⚠️ Important: DeepL's free tier gives a character allowance to try out, but it does not reset each month. A credit card is required to sign up. Once the allowance runs out, you'll need a paid plan. Check DeepL's current plans (https://www.deepl.com/en/pro/change-plan#api) for up-to-date pricing.
-
-🤔 Why do I need to set this up?
-You might wonder: "Other dual-sub extensions like Language Reactor, Trancy, and InterSub work instantly—why not this one?"
-Here's the truth: Free services either use low-quality translation APIs, run at a loss (subsidized by premium users), or monetize your data.
-💰 I built this extension differently because I believe you deserve:
-
-- ✨ Best-in-class translations – DeepL provides high-quality translations to 30+ languages including English, Vietnamese, Japanese, and more
-- 🔒 Complete privacy – No data collection, no ads, no tracking
-- ♻️ Sustainability – No active maintenance burden on my end
-- 🚀 Try it out – DeepL's free tier gives a character allowance to get started (one-time, not recurring)
-
-Yes, it takes 5-10 minutes for one-time setup, but you get premium quality without compromise. Worth it? I think so! 😊
-
-🔑 How to get your translation key:
-
-📺 Video walkthrough (recommended): Watch 1 min tutorial on YouTube: https://www.youtube.com/watch?v=VgpxUH7SbSY
-
-📝 Step-by-step instructions (Visualization included in extension setting page):
-
-1. Sign up for a free DeepL account
-Visit DeepL Account Signup (https://www.deepl.com/en/your-account) and create your account
-
-2. Select your DeepL API plan
-Go to DeepL Developer Page (https://www.deepl.com/en/pro#developer), look for "Find your perfect plan", then click the "DeepL API" tab. Select the plan that suits your needs.
-
-3. Create your subscription
-Choose the free tier to try it out, or a paid plan for recurring monthly access. See DeepL's current plans (https://www.deepl.com/en/pro/change-plan#api) for details.
-💳 A credit card is required even for the free tier
-
-4. Create your API key
-After the subscription has been made, go to DeepL Key Page (https://www.deepl.com/en/your-account/keys). Click the "Create Key" button and give it a name (e.g., "YLE Dualsub translation key")
-Copy your key
-Your API key will look like this:
-
-Free tier: fcb8779e-4837-4e2f-99ef-1ac7255d2ed2:fx (ends with :fx)
-Paid tier: fcb8779e-4837-4e2f-99ef-1ac7255d2ed2 (no :fx suffix)
-
-5. Paste it in the extension
-Copy the entire key and paste it in the extension settings, select your account type (Free/Paid), and click "Add new translation key"
-
-🎉 That's it! Your extension is now ready to provide high-quality translations.
-📚 Need more help? View the official DeepL guide: https://support.deepl.com/hc/en-us/articles/360020695820-API-key-for-DeepL-API
+- Dual Subtitle Display — see Finnish and translated subtitles at the same time
+- Multiple Language Support — translate to English, Vietnamese, Japanese, Spanish, or any of 30+ languages supported by DeepL
+- High-Quality Translation — powered by DeepL, known for accurate and natural translations
+- Smart Caching — translations are stored locally for 365 days, so rewatching uses zero API calls
+- Multi-Token Support — add up to 2 DeepL translation keys with visual usage tracking
+- One-Click Toggle — enable or disable dual subs directly in the video player
+- Shadowing Tools — rewind/forward 3-second buttons plus keyboard shortcuts (, and . keys) for pronunciation practice
+- Blur Mode — hide Finnish, translation, or both subtitles to test yourself, then hover to reveal
+- Word Lookup — select a word in a subtitle and right-click for an instant in-page translation, no need to leave the video
+- Copy Subtitle — click the copy icon to send the current Finnish subtitle line to your clipboard
+- Reload Subtitles — clear cached translations for the current episode and re-translate from scratch if something looks off
+- Privacy-First — all data stays in your browser, no tracking
 
 
-PERFECT FOR 👥
+🚀 HOW TO USE
 
-Finnish learners at intermediate level and above 📖
-Expats in Finland improving their comprehension 🇫🇮
-Language enthusiasts who prefer learning by immersion 🎓
-Anyone interested in Finnish culture and media 🎭
+1. Install the extension and add your DeepL translation key (API token) in settings
+2. (Optional) Select your preferred translation language from the dropdown (default is English)
+3. Open any video on YLE Areena or Ruutu.fi
+4. Click the "Dual Sub" toggle in the player
+5. Start learning Finnish through immersion
 
-
-COST 💰
-
-YLE Areena is free worldwide. 🌍 DeepL's free tier gives a character allowance to get started (one-time, does not reset monthly). With smart caching, you can go a long way on the free allowance. Check DeepL's current plans (https://www.deepl.com/en/pro/change-plan#api) for up-to-date pricing. 🎉
+Full step-by-step guidance with screenshots: https://finnish-streaming-dual-sub.netlify.app/guidance
 
 
-TECHNICAL NOTES 🔧
+🔑 WHY SET UP A DEEPL TRANSLATION KEY (API TOKEN)?
 
-Requires a DeepL API key (get yours at https://www.deepl.com/en/pro/change-plan#api) 🔑
-Works on YLE Areena (https://areena.yle.fi/tv) and Ruutu (https://www.ruutu.fi) 📺
-No external servers — all processing happens locally 💻
-Open source on GitHub:  https://github.com/anhtumai/finnish-streaming-dual-sub 💙
+You might wonder: "Other dual-sub extensions work instantly, why not this one?"
+
+This extension takes a different approach because you deserve:
+
+- Best-in-class translations — DeepL provides high-quality translations for Finnish to 30+ languages
+- Complete privacy — no data collection, no ads, no tracking
+- Try it out — DeepL's free tier gives a character allowance to get started (one-time, not recurring)
+- Sustainable — no hidden costs or monetization of your data
+
+Yes, it takes 5-10 minutes for one-time setup, but you get premium quality without compromise.
+
+A quick note on why DeepL specifically: I've passed the YKI Keski-taso exam and worked through the entire Suomen Mestari series, so I know Finnish grammar well enough to judge translation quality firsthand. After comparing Google Translate, Bing Translate, and DeepL, DeepL was the clear winner — Google Translate, for instance, only gets roughly 60% accuracy on Finnish. That's why this extension only supports DeepL for now.
+
+
+👥 WHO IT'S FOR
+
+- Finnish learners at all levels, including beginners — features like Word Lookup for instant in-page translations and Copy Subtitle for pasting a line into your favorite AI chatbot make early exposure to the language much easier
+- Anyone interested in Finnish culture and media
+- Anyone who wants to watch Finnish content without already knowing Finnish
+
+
+💰 COST
+
+YLE Areena is free worldwide. DeepL's free tier gives a character allowance to get started (one-time, does not reset monthly). With smart caching, you can go a long way on the free allowance.
+
+Once the allowance runs out, check DeepL's current plans (https://www.deepl.com/en/pro/change-plan#api) for paid options. If that feels expensive, share one key with friends or fellow Finnish learners and split the cost.
+
+
+🔧 TECHNICAL NOTES
+
+Requires a DeepL translation key (API token), get yours at https://www.deepl.com/en/pro/change-plan#api
+Works on YLE Areena (https://areena.yle.fi/tv) and Ruutu (https://www.ruutu.fi)
+No external servers — all processing happens locally
+Open source on GitHub: https://github.com/anhtumai/finnish-streaming-dual-sub
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------
-Transform passive watching into active learning. Start your Finnish journey today! 🚀🎉
+Turn passive watching into active learning. Start your Finnish journey today.
 ------------------------------------------------------------------------------------------------------------------------------------------

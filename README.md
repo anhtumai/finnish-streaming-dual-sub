@@ -180,7 +180,7 @@ npm run validate
 cd extension-options-page && npm install && npm run build
 ```
 
-Load the unpacked extension in Chrome from the project root — no build step needed for the extension itself.
+Load the unpacked extension in Chrome from the project root — the content scripts and background worker need no build step, but `manifest.json` points `options_page` at `extension-options-page/dist/index.html`, which is gitignored. Run the "Build settings page" command above at least once before loading unpacked, or Chrome will fail with "Could not load manifest."
 
 ## License
 

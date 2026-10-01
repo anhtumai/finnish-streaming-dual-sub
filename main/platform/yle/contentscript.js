@@ -80,6 +80,14 @@ function shouldBlurTranslation() {
 let currentMovieName = null;
 
 /**
+ * Whether the document-level keydown/click listeners used by the dual sub
+ * extension section (rewind/forward shortcuts, dropdown-dismiss logic) have
+ * already been attached. addDualSubExtensionSection() can run multiple
+ * times per page load, so these must only be attached once.
+ */
+let dualSubExtensionDocumentListenersAttached = false;
+
+/**
  * @type {IDBDatabase | null}
  * Memory cached current database connection to write data to Index DB
  */
@@ -657,31 +665,36 @@ async function addDualSubExtensionSection() {
 
   // Rewind and forward button logic
   function rewindForwardLogicHandle() {
-    const videoElement = document.querySelector('video');
-    if (!videoElement) {
-      console.error("FinnishStreamingDualSubExtension: Cannot find video element");
-      return;
-    }
-
     function videoForward() {
-      videoElement.currentTime = videoElement.currentTime + 3;
+      const videoElement = document.querySelector('video');
+      if (videoElement) {
+        videoElement.currentTime = videoElement.currentTime + 3;
+      }
     }
 
     function videoRewind() {
-      videoElement.currentTime = Math.max(0, videoElement.currentTime - 3);
+      const videoElement = document.querySelector('video');
+      if (videoElement) {
+        videoElement.currentTime = Math.max(0, videoElement.currentTime - 3);
+      }
     }
 
-    document.addEventListener('keydown', (event) => {
-      if (!videoElement) { return; }
-
-      if (event.key === ',') {
-        event.preventDefault();
-        videoRewind();
-      } else if (event.key === '.') {
-        event.preventDefault();
-        videoForward();
-      }
-    });
+    // The controls section (and therefore this whole function) can be
+    // re-created multiple times per page (e.g. our watchdog re-adds it
+    // whenever YLE's React player wipes it out on re-render). Only attach
+    // the document-level keydown listener once, otherwise rewind/forward
+    // would fire multiple times per key press.
+    if (!dualSubExtensionDocumentListenersAttached) {
+      document.addEventListener('keydown', (event) => {
+        if (event.key === ',') {
+          event.preventDefault();
+          videoRewind();
+        } else if (event.key === '.') {
+          event.preventDefault();
+          videoForward();
+        }
+      });
+    }
 
     const rewindButton = document.getElementById('yle-dual-sub-rewind-button');
     const forwardButton = document.getElementById('yle-dual-sub-forward-button');
@@ -753,21 +766,32 @@ async function addDualSubExtensionSection() {
     }
   });
 
-  document.addEventListener('click', (e) => {
-    // @ts-ignore - EventTarget is used as Node at runtime
-    if (!warningPopover.contains(e.target) && !warningIcon.contains(e.target)) {
-      warningPopover.classList.remove("active");
-    }
-    // @ts-ignore - EventTarget is used as Node at runtime
-    if (!blurModeMenuButton.contains(e.target) && !blurModeDropdown.contains(e.target)) {
-      blurModeDropdown.classList.remove('open');
-    }
-    const lookupPopup = document.getElementById('dual-sub-lookup-popup');
-    // @ts-ignore - EventTarget is used as Node at runtime
-    if (lookupPopup && !lookupPopup.contains(e.target)) {
-      lookupPopup.remove();
-    }
-  }, true);
+  // See the comment on the keydown listener above: only attach this once,
+  // and look elements up live (by id/class) rather than closing over the
+  // ones created in this particular call, since those get discarded
+  // whenever the section is re-created.
+  if (!dualSubExtensionDocumentListenersAttached) {
+    document.addEventListener('click', (e) => {
+      const currentWarningIcon = document.querySelector(".dual-sub-warning__icon");
+      const currentWarningPopover = document.querySelector(".dual-sub-warning__popover");
+      // @ts-ignore - EventTarget is used as Node at runtime
+      if (currentWarningPopover && currentWarningIcon && !currentWarningPopover.contains(e.target) && !currentWarningIcon.contains(e.target)) {
+        currentWarningPopover.classList.remove("active");
+      }
+      const currentBlurModeMenuButton = document.getElementById('yle-dual-sub-blur-mode-menu-btn');
+      const currentBlurModeDropdown = document.getElementById('yle-dual-sub-blur-mode-dropdown');
+      // @ts-ignore - EventTarget is used as Node at runtime
+      if (currentBlurModeMenuButton && currentBlurModeDropdown && !currentBlurModeMenuButton.contains(e.target) && !currentBlurModeDropdown.contains(e.target)) {
+        currentBlurModeDropdown.classList.remove('open');
+      }
+      const lookupPopup = document.getElementById('dual-sub-lookup-popup');
+      // @ts-ignore - EventTarget is used as Node at runtime
+      if (lookupPopup && !lookupPopup.contains(e.target)) {
+        lookupPopup.remove();
+      }
+    }, true);
+    dualSubExtensionDocumentListenersAttached = true;
+  }
 
   // Copy Finnish subtitle button logic
   const copySubtitleButton = document.getElementById('yle-dual-sub-copy-subtitle-button');
@@ -920,6 +944,25 @@ if (document.body instanceof Node) {
     subtree: true,
   });
 }
+
+// Watchdog: YLE Areena's player controls are React-managed. Whenever that
+// component re-renders (for example on play/pause toggle), React reconciles
+// its container's children against its own virtual DOM and silently removes
+// any node it doesn't know about - including our manually injected
+// ".dual-sub-extension-section". The "video element appeared" mutation only
+// fires once per video, so it can't catch this. Periodically verify our
+// section still exists while a video is present, and re-add it if a
+// re-render wiped it out.
+setInterval(() => {
+  if (!document.querySelector('video')) {
+    return;
+  }
+  if (!document.querySelector('.dual-sub-extension-section')) {
+    addDualSubExtensionSection().then(() => { }).catch((error) => {
+      console.error("FinnishStreamingDualSubExtension: Error re-adding dual sub extension section:", error);
+    });
+  }
+}, 2000);
 
 document.addEventListener("sendTranslationTextEvent", (e) => {
   /**

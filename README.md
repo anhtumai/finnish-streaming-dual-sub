@@ -11,6 +11,8 @@ This extension integrates with YLE Areena and Ruutu.fi video players to show dua
 ## Key Features
 
 - **Dual Subtitle Display** — Finnish + translated subtitles shown simultaneously
+- **Works Without Setup** — Google Translate fallback lets you try the extension immediately
+- **DeepL Support** — Significantly more accurate for Finnish; recommended for language learners (free one-time setup)
 - **Multiple Language Support** — Translate to English, Vietnamese, Japanese, Spanish, or any of 30+ languages supported by DeepL
 - **Smart Caching** — Translations stored locally for 365 days; rewatching videos uses zero API calls
 - **Multi-Token Support** — Add multiple DeepL API tokens with visual usage tracking
@@ -32,7 +34,7 @@ This extension is my plan to reach the next level, where you can expose to authe
 
 1. You watch videos on YLE Areena or Ruutu.fi with Finnish subtitles enabled
 2. The extension intercepts Finnish subtitle text
-3. Text is translated via DeepL API using your personal API key
+3. Text is translated — via DeepL if you have a key set up, otherwise via Google Translate
 4. Translations are cached locally in IndexedDB for 365 days
 5. Both Finnish and translated subtitles display in the video player
 
@@ -52,7 +54,7 @@ flowchart TD
     subgraph ContentScript
         INJECT[inject.js - injects injected.js via script tag]
         EVT[sendTranslationTextEvent - custom DOM event]
-        TQ[TranslationQueue - batch up to 7 texts]
+        TQ[TranslationQueue - batch up to 7 texts with DeepL, 3 with Google Translate]
         MAP[sharedTranslationMap - in-memory HashMap]
         ERRMAP[sharedTranslationErrorMap - in-memory HashMap]
         IDB[IndexedDB - 365-day cache per movie and language]
@@ -64,10 +66,12 @@ flowchart TD
     subgraph Background
         BG[background.js - message router]
         DEEPL_JS[deepl_api.js - retry up to 3x with exponential backoff]
+        GOOGLE_JS[google_translate_api.js - fallback when no DeepL key, retry up to 3x per text]
     end
 
     subgraph External
         DeepL[DeepL API]
+        Google[Unofficial Google Translate endpoint]
     end
 
     INJECT -->|appendChild script tag| INJ
@@ -75,10 +79,14 @@ flowchart TD
     INJ -->|document.dispatchEvent sendTranslationTextEvent| EVT
     EVT --> TQ
     TQ -->|chrome.runtime.sendMessage fetchTranslation| BG
-    BG --> DEEPL_JS
+    BG -->|DeepL key selected| DEEPL_JS
+    BG -->|no DeepL key| GOOGLE_JS
     DEEPL_JS -->|HTTPS POST| DeepL
     DeepL -->|translated texts| DEEPL_JS
     DEEPL_JS -->|success or error| BG
+    GOOGLE_JS -->|HTTPS GET| Google
+    Google -->|translated text| GOOGLE_JS
+    GOOGLE_JS -->|success or error| BG
     BG -->|sendResponse| TQ
     TQ -->|success| MAP
     TQ -->|error| ERRMAP
@@ -114,7 +122,8 @@ See the [documentation site](https://finnish-streaming-dual-sub.netlify.app/) fo
 ## Technology Stack
 
 - **Manifest V3** Chrome Extension
-- **DeepL API** for high-quality translations
+- **DeepL API** for high-quality translations (recommended)
+- **Google Translate** as a zero-setup fallback
 - **IndexedDB** for local caching with multi-language support
 - **Chrome Storage Sync** for cross-device settings persistence
 - **React** for the settings UI (options page)

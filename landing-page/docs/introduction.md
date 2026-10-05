@@ -29,13 +29,17 @@ Demo video:
 
 **The Challenge:** Spoken Finnish differs drastically from written Finnish, with unique grammar and slang. Traditional study methods don't prepare you for real conversations. This extension bridges that gap by letting you learn through authentic Finnish media.
 
-**How It Works:** The extension integrates with [DeepL](https://www.deepl.com), a leading translation service widely recognized for its exceptional quality. When you watch a video, Finnish subtitles are automatically translated to your chosen language in real-time and displayed below the original text.
+**How It Works:** When you watch a video, Finnish subtitles are automatically translated to your chosen language in real-time and displayed below the original text. The extension supports two translation sources:
+
+- **Google Translate** — works instantly with no setup. Google Translate has improved a lot and works well for everyday viewing.
+- **DeepL** — the most accurate, fluent and natural translations, recommended for language learners. Requires a free one-time setup (5–10 minutes).
 
 ## Key Features
 
 - **Dual Subtitle Display** — See Finnish + translated subtitles simultaneously on YLE Areena & Ruutu
+- **Works Without Setup** — Google Translate fallback lets you try the extension immediately
 - **Multiple Language Support** — Translate to English, Vietnamese, or any language supported by DeepL
-- **High-Quality Translation** — Powered by DeepL, known for accurate and natural translations
+- **High-Quality Translation** — DeepL recommended for accurate and natural Finnish translations
 - **Smart Caching** — Translations stored locally for 365 days; rewatching uses zero API calls
 - **Multi-Token Support** — Add up to 2 DeepL API tokens with visual usage tracking
 - **One-Click Toggle** — Enable/disable dual subs directly in the video player
@@ -45,7 +49,7 @@ Demo video:
 
 ## Why Setup a DeepL API Key?
 
-You might wonder: "Other dual-sub extensions work instantly—why not this one?"
+The extension works out of the box with Google Translate, which has improved a lot. But for the most accurate, fluent and natural translations, set up a DeepL key. Finnish has many words with multiple meanings and a spoken form that differs significantly from written Finnish, and DeepL still handles these best.
 
 This extension takes a different approach because you deserve:
 

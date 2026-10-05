@@ -14,7 +14,7 @@ Ruutu website: https://www.ruutu.fi
 
 The Challenge: Spoken Finnish differs drastically from written Finnish, with unique grammar and slang. Traditional study methods don't prepare you for real conversations. This extension bridges that gap by letting you learn through authentic Finnish media: news, dramas, documentaries, and more.
 
-How It Works: The extension integrates with DeepL (https://www.deepl.com), a leading translation service widely recognized for its exceptional quality. When you watch a video, Finnish subtitles are automatically translated to your chosen language in real-time and displayed below the original text.
+How It Works: The extension integrates with DeepL (https://www.deepl.com), a leading translation service widely recognized for its exceptional quality. If you haven't set up a DeepL key yet, it falls back to Google Translate so you can try it right away. When you watch a video, Finnish subtitles are automatically translated to your chosen language in real-time and displayed below the original text.
 
 
 ✨ WHY CHOOSE THIS APP
@@ -27,8 +27,9 @@ There are plenty of AI-assistant apps for language learning on the market, but t
 Check the list of key features here: https://finnish-streaming-dual-sub.netlify.app/features
 
 - Dual Subtitle Display — see Finnish and translated subtitles at the same time
+- Works Without Setup — Google Translate fallback lets you try the extension immediately
 - Multiple Language Support — translate to English, Vietnamese, Japanese, Spanish, or any of 30+ languages supported by DeepL
-- High-Quality Translation — powered by DeepL, known for accurate and natural translations
+- High-Quality Translation — set up DeepL for significantly more accurate Finnish translations (recommended for learners)
 - Smart Caching — translations are stored locally for 365 days, so rewatching uses zero API calls
 - Multi-Token Support — add up to 2 DeepL translation keys with visual usage tracking
 - One-Click Toggle — enable or disable dual subs directly in the video player
@@ -42,20 +43,19 @@ Check the list of key features here: https://finnish-streaming-dual-sub.netlify.
 
 🚀 HOW TO USE
 
-1. Install the extension and add your DeepL translation key (API token) in settings
-2. (Optional) Select your preferred translation language from the dropdown (default is English)
-3. Open any video on YLE Areena or Ruutu.fi
-4. Click the "Dual Sub" toggle in the player
-5. Start learning Finnish through immersion
+1. Install the extension. It works right away using Google Translate
+2. (Recommended) Add your DeepL translation key (API token) in settings for much more accurate Finnish translations
+3. (Optional) Select your preferred translation language from the dropdown (default is English)
+4. Open any video on YLE Areena or Ruutu.fi
+5. Click the "Dual Sub" toggle in the player
+6. Start learning Finnish through immersion
 
 Full step-by-step guidance with screenshots: https://finnish-streaming-dual-sub.netlify.app/guidance
 
 
 🔑 WHY SET UP A DEEPL TRANSLATION KEY (API TOKEN)?
 
-You might wonder: "Other dual-sub extensions work instantly, why not this one?"
-
-This extension takes a different approach because you deserve:
+The extension works out of the box with Google Translate, which has improved a lot. But for the most accurate, fluent and natural translations, set up a DeepL key, because you deserve:
 
 - Best-in-class translations — DeepL provides high-quality translations for Finnish to 30+ languages
 - Complete privacy — no data collection, no ads, no tracking
@@ -64,7 +64,7 @@ This extension takes a different approach because you deserve:
 
 Yes, it takes 5-10 minutes for one-time setup, but you get premium quality without compromise.
 
-A quick note on why DeepL specifically: I've passed the YKI Keski-taso exam and worked through the entire Suomen Mestari series, so I know Finnish grammar well enough to judge translation quality firsthand. After comparing Google Translate, Bing Translate, and DeepL, DeepL was the clear winner — Google Translate, for instance, only gets roughly 60% accuracy on Finnish. That's why this extension only supports DeepL for now.
+A quick note on why DeepL specifically: I've passed the YKI Keski-taso exam and worked through the entire Suomen Mestari series, so I know Finnish grammar well enough to judge translation quality firsthand. After comparing Google Translate, Bing Translate, and DeepL, DeepL was the clear winner. Google Translate has improved a lot since then, so it's offered as a zero-setup default, but DeepL still gives the most accurate, fluent and natural translations and remains the recommended option for learners.
 
 
 👥 WHO IT'S FOR
@@ -83,7 +83,8 @@ Once the allowance runs out, check DeepL's current plans (https://www.deepl.com/
 
 🔧 TECHNICAL NOTES
 
-Requires a DeepL translation key (API token), get yours at https://www.deepl.com/en/pro/change-plan#api
+Works out of the box with Google Translate, no setup required
+DeepL translation key (API token) optional but recommended for language learners, get yours at https://www.deepl.com/en/pro/change-plan#api
 Works on YLE Areena (https://areena.yle.fi/tv) and Ruutu (https://www.ruutu.fi)
 No external servers — all processing happens locally
 Open source on GitHub: https://github.com/anhtumai/finnish-streaming-dual-sub

@@ -452,33 +452,27 @@ async function sleep(ms) {
 
 /**
  * Handle dual sub behaviour based on whether the system has valid key selected.
- * If no key is selected, display warning icon and disable dual sub switch.
+ * If no key is selected, display warning icon.
  * @param {boolean} hasSelectedToken
  */
 function _handleDualSubBehaviourBasedOnSelectedToken(hasSelectedToken) {
   const warningSection = document.querySelector(".dual-sub-warning");
-  const dualSubSwitch = document.getElementById("dual-sub-switch");
-  if (hasSelectedToken) {
-    if (warningSection) {
-      warningSection.style.display = "none";
-    }
-    if (dualSubSwitch) {
-      dualSubSwitch.disabled = false;
-    }
-  } else {
-    if (warningSection) {
-      warningSection.style.display = "inline-block";
-    }
-    if (dualSubSwitch) {
-      if (dualSubSwitch.checked) {
-        dualSubSwitch.click();
-      }
-      dualSubSwitch.disabled = true;
-    }
+  if (warningSection) {
+    warningSection.style.display = hasSelectedToken ? "none" : "inline-block";
   }
+
   const warningPopover = document.querySelector(".dual-sub-warning__popover");
   if (warningPopover) {
     warningPopover.classList.remove("active");
+  }
+
+  // DeepL can handle a large batch size per request
+  // Meanwhile, Unofficial Google Translate rate-limit is very sensitive
+  // so we limit batch size to 3 items per request
+  if (hasSelectedToken) {
+    translationQueue.BATCH_MAXIMUM_SIZE = 7;
+  } else {
+    translationQueue.BATCH_MAXIMUM_SIZE = 3;
   }
 }
 
@@ -531,15 +525,13 @@ async function addDualSubExtensionSection() {
           !
         </span>
         <span class="dual-sub-warning__popover">
-          No translation key selected!<br>
-          Please select one in <a href="#" id="open-options-link">the option page</a>.<br>
-          Follow
-          <a href="https://finnish-streaming-dual-sub.netlify.app"
+          No DeepL key set, so subtitles are translated by Google Translate.
+          It has improved a lot, but DeepL gives the most accurate, fluent and natural translations.<br>
+          Add a key in <a href="#" id="open-options-link">the option page</a>
+          (<a href="https://finnish-streaming-dual-sub.netlify.app/guidance#setting-up-your-translation-key"
              target="_blank"
-             rel="noopener noreferrer">
-            this guide
-          </a>
-          for more information.
+             rel="noopener noreferrer">setup guide</a>).<br>
+          Google Translate is unofficial and may stop working without warning.
         </span>
       </span>
 

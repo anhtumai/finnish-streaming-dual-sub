@@ -10,7 +10,7 @@ This page provides step-by-step instructions on how to set up and use the extens
 
    - <img src={require('@site/static/img/extension-popup-page.png').default} alt="Extension popup page" style={{maxWidth: '75%', borderRadius: '8px', border: '1px solid #404040'}} />
 
-4. Add your `DeepL Translation Key`.
+4. (Optional but recommended) Add your `DeepL Translation Key`. Without it, the extension falls back to Google Translate. Google Translate has improved a lot, but for the most accurate, fluent and natural translations, set up a DeepL key. See the setup instructions below.
 
    - <img src={require('@site/static/img/add-new-deepl-translation-key.png').default} alt="Add new DeepL translation key" style={{maxWidth: '75%', borderRadius: '8px', border: '1px solid #404040'}} />
 
@@ -101,6 +101,8 @@ Yes, it takes 5-10 minutes for one-time setup, but you get premium quality witho
    Copy the entire key and paste it in the extension's options page, select your account type (Free/Paid), and click "Add new translation key"
 
 🎉 That's it! Your extension is now ready to provide high-quality translations.
+
+💡 **Watched some episodes before adding your key?** The extension saves translations on your computer, so it doesn't need to translate the same episode twice. That means episodes you watched before will still show the old Google Translate subtitles. To get DeepL subtitles for them, open the episode and click the reload icon in the video player.
 
 📚 Need more help? View the [official DeepL guide](https://support.deepl.com/hc/en-us/articles/360020695820-API-key-for-DeepL-API)
 

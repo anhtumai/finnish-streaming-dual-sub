@@ -294,7 +294,7 @@
   border: 0.5px solid #ddd;
   border-radius: 12px;
   min-width: 300px;
-  max-width: 500px;
+  max-width: min(680px, 90vw);
   box-sizing: border-box;
   z-index: 99999;
   font-family: sans-serif;
@@ -357,14 +357,33 @@
 .dual-sub-lookup-body {
   padding: .75rem 1rem 1rem;
   background: #fff;
+  max-height: 50vh;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: auto auto minmax(180px, 1fr);
+  column-gap: 1rem;
 }
 
 .dual-sub-lookup-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: .75rem;
-  padding: 5px 0;
+  display: contents;
+}
+
+.dual-sub-lookup-row > * {
+  padding: 6px 0;
+  border-bottom: 0.5px solid #f0f0f0;
+}
+
+.dual-sub-lookup-row:last-child > * {
+  border-bottom: none;
+}
+
+.dual-sub-lookup-row-header > * {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #888;
+  border-bottom: 0.5px solid #e8e8e8;
 }
 
 .dual-sub-lookup-row-key {
@@ -375,7 +394,12 @@
 .dual-sub-lookup-row-val {
   font-size: 16px;
   color: #111;
-  text-align: right;
+}
+
+.dual-sub-lookup-row-def {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
 }
 
 .dual-sub-lookup-arrow {
@@ -397,4 +421,22 @@
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
   border-top: 7px solid #fff;
+}
+
+.dual-sub-lookup-wiktionary-item {
+  display: block;
+  padding: 2px 0;
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.dual-sub-lookup-wiktionary-item:hover {
+  text-decoration: underline;
+}
+
+.dual-sub-lookup-wiktionary-pos {
+  font-size: 12px;
+  font-style: italic;
+  color: #888;
+  margin-right: 6px;
 }

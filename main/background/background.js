@@ -1,10 +1,12 @@
 /* global importScripts, loadSelectedTokenFromChromeStorageSync */
 /* global translateTextsWithErrorHandlingWithDeepL */
 /* global translateTextsWithErrorHandlingWithGoogleTranslate */
+/* global fetchWiktionaryDefinitionsWithErrorHandling */
 importScripts('../utils/utils.js');
 importScripts('../translation/shared.js');
 importScripts('../translation/deepl_api.js');
 importScripts('../translation/google_translate_api.js');
+importScripts('../translation/wiktionary_api.js');
 
 // Load selected DeepL key from Chrome storage sync
 // Assume that deeplTokenKey with empty string means no key selected
@@ -79,6 +81,15 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         sendResponse([false, error.message || String(error)]);
       });
     }
+    return true;
+  }
+
+  if (request.action === 'fetchWiktionaryDefinitions') {
+    /** @type {string[]} */
+    const words = request.data.words;
+    fetchWiktionaryDefinitionsWithErrorHandling(words).then((lookupResult) => {
+      sendResponse(lookupResult);
+    });
     return true;
   }
 

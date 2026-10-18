@@ -52,7 +52,7 @@ Use **Ctrl +** / **Ctrl −** in the browser to scale subtitles up or down. YLE 
 
 If translations look off, click the reload icon to clear the cached translations for the current episode and re-translate from scratch. This uses additional DeepL credits but can improve accuracy.
 
-This is also useful right after you add a DeepL key: episodes you watched before still show the saved Google Translate subtitles (ending with "(by Google)") until you click reload.
+This is also useful right after you add a DeepL key: episodes you watched before still show the saved Google Translate subtitles until you click reload.
 
 <img src={require('@site/static/img/features/reload-subtitles.png').default} alt="Reload subtitles" style={{maxWidth: '100%', borderRadius: '8px', border: '1px solid #404040'}} />
 
@@ -60,7 +60,7 @@ This is also useful right after you add a DeepL key: episodes you watched before
 
 The extension supports two translation services:
 
-- **Google Translate** — works immediately with no setup. Google Translate has improved a lot and works well for everyday viewing. Subtitles translated by Google Translate end with "(by Google)", so you can tell them apart from DeepL translations.
+- **Google Translate** — works immediately with no setup. Google Translate has improved a lot and works well for everyday viewing.
 - **DeepL** — the most accurate, fluent and natural translations for Finnish, especially spoken language and words with multiple meanings. Requires a free one-time setup (5–10 minutes). Recommended for anyone seriously learning Finnish.
 
 ## Privacy

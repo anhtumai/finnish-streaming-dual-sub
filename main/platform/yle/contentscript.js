@@ -525,7 +525,7 @@ async function addDualSubExtensionSection() {
           !
         </span>
         <span class="dual-sub-warning__popover">
-          No DeepL key set, so subtitles are translated by Google Translate (marked with "(by Google)").
+          No DeepL key set, so subtitles are translated by Google Translate.
           It has improved a lot, but DeepL gives the most accurate, fluent and natural translations.<br>
           Add a key in <a href="#" id="open-options-link">the option page</a>
           (<a href="https://finnish-streaming-dual-sub.netlify.app/guidance#setting-up-your-translation-key"

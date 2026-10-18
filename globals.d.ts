@@ -36,6 +36,11 @@ declare function importScripts(...urls: string[]): void;
 declare function loadSelectedTokenFromChromeStorageSync(): Promise<{key: string, isPro: boolean} | null>;
 declare function loadTargetLanguageFromChromeStorageSync(): Promise<string>;
 
+// Functions from wiktionary_api.js
+declare function fetchWiktionaryDefinitionsWithErrorHandling(
+    words: string[]
+): Promise<[true, WiktionaryLookupResult[]] | [false, string]>;
+
 // Database functions from database.js
 declare function openDatabase(): Promise<IDBDatabase>;
 declare function saveSubtitle(
@@ -101,4 +106,16 @@ interface DeepLTokenInfoInStorage {
     characterLimit: string;
     lastUsageCheckedAt: string;
     selected: boolean;
+}
+
+// Types for Wiktionary lookup
+interface WiktionaryDefinition {
+    partOfSpeech: string; // example: Noun, Adverb, ...
+    text: string;
+}
+
+interface WiktionaryLookupResult {
+    word: string;
+    definitions: WiktionaryDefinition[];
+    url: string;
 }

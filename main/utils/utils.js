@@ -84,6 +84,46 @@ async function fetchTranslation(rawSubtitleFinnishTexts, targetLanguage, context
   }
 }
 
+/** @type {Map<string, WiktionaryLookupResult>} */
+const wiktionaryLookupCache = new Map();
+
+/**
+ * Look up Finnish words on Wiktionary, with an in-memory cache per page session
+ * @param {string[]} words
+ * @returns {Promise<Map<string, WiktionaryLookupResult>>} - keyed by word, missing on failure
+ */
+async function fetchWiktionaryDefinitions(words) {
+  const uncachedWords = [...new Set(words)].filter(word => !wiktionaryLookupCache.has(word));
+  if (uncachedWords.length > 0) {
+    try {
+      /**
+       * @type {[true, WiktionaryLookupResult[]] | [false, string]}
+       */
+      const response = await chrome.runtime.sendMessage({
+        action: 'fetchWiktionaryDefinitions',
+        data: { words: uncachedWords }
+      });
+      if (response[0] === true) {
+        response[1].forEach(result => wiktionaryLookupCache.set(result.word, result));
+      } else {
+        console.warn("FinnishStreamingDualSubExtension: Wiktionary lookup failed:", response[1]);
+      }
+    } catch (error) {
+      console.error("FinnishStreamingDualSubExtension: Error sending message to background for Wiktionary lookup:", error);
+    }
+  }
+
+  /** @type {Map<string, WiktionaryLookupResult>} */
+  const results = new Map();
+  for (const word of words) {
+    const cached = wiktionaryLookupCache.get(word);
+    if (cached) {
+      results.set(word, cached);
+    }
+  }
+  return results;
+}
+
 /**
  * @param {string} text
  * @returns {string[]}
@@ -98,7 +138,7 @@ function splitIntoWords(text) {
 /**
  * Show lookup popup on top of displayed subtitles rows wrapper, if it exists and visible
  *
- * @param {Array<{key: string, val: string}>} rows
+ * @param {Array<{key: string, val: string, wiktionary?: WiktionaryLookupResult}>} rows
  * @param {number} selectedTextStartIndex
  * @param {number} selectedTextEndIndex
  * @param {Element} appendTarget
@@ -145,7 +185,16 @@ function showLookupPopup(rows, selectedTextStartIndex, selectedTextEndIndex, app
   `;
 
   const body = popup.querySelector('.dual-sub-lookup-body');
-  rows.forEach(({ key, val }) => {
+  const header = document.createElement('div');
+  header.className = 'dual-sub-lookup-row dual-sub-lookup-row-header';
+  ['Word', 'Translation', 'Definition'].forEach((title) => {
+    const cell = document.createElement('span');
+    cell.textContent = title;
+    header.appendChild(cell);
+  });
+  body.appendChild(header);
+
+  rows.forEach(({ key, val, wiktionary }) => {
     const row = document.createElement('div');
     row.className = 'dual-sub-lookup-row';
     const keyEl = document.createElement('span');
@@ -154,7 +203,7 @@ function showLookupPopup(rows, selectedTextStartIndex, selectedTextEndIndex, app
     const valEl = document.createElement('span');
     valEl.className = 'dual-sub-lookup-row-val';
     valEl.textContent = val;
-    row.append(keyEl, valEl);
+    row.append(keyEl, valEl, createWiktionaryDefinitionCell(wiktionary));
     body.appendChild(row);
   });
 
@@ -162,6 +211,39 @@ function showLookupPopup(rows, selectedTextStartIndex, selectedTextEndIndex, app
 
   popup.addEventListener('click', (e) => e.stopPropagation());
   popup.querySelector('.dual-sub-lookup-close').addEventListener('click', () => popup.remove());
+}
+
+/**
+ * @param {WiktionaryLookupResult | undefined} wiktionary
+ * @returns {HTMLElement}
+ */
+function createWiktionaryDefinitionCell(wiktionary) {
+  const container = document.createElement('div');
+  container.className = 'dual-sub-lookup-row-def';
+
+  if (!wiktionary || wiktionary.definitions.length === 0) {
+    container.textContent = '—';
+    return container;
+  }
+
+  wiktionary.definitions.forEach(({ partOfSpeech, text }) => {
+    const item = document.createElement('a');
+    item.className = 'dual-sub-lookup-wiktionary-item';
+    item.href = wiktionary.url;
+    item.target = '_blank';
+    item.rel = 'noopener noreferrer';
+    item.title = 'View on Wiktionary';
+    if (partOfSpeech) {
+      const posEl = document.createElement('span');
+      posEl.className = 'dual-sub-lookup-wiktionary-pos';
+      posEl.textContent = partOfSpeech;
+      item.appendChild(posEl);
+    }
+    item.appendChild(document.createTextNode(text));
+    container.appendChild(item);
+  });
+
+  return container;
 }
 
 /**
@@ -193,14 +275,19 @@ async function handleLookupMessage(msg, targetLanguage, appendTarget) {
   if (words.length > 1) {
     toTranslate = [...words, selectedText];
   }
-  const [isSucceeded, translations] = await fetchTranslation(
-    toTranslate, targetLanguage, wholeSentence
-  );
+  const [[isSucceeded, translations], wiktionaryResults] = await Promise.all([
+    fetchTranslation(toTranslate, targetLanguage, wholeSentence),
+    fetchWiktionaryDefinitions(words),
+  ]);
 
   const selectedTextEndIndex = selectedTextStartIndex + selectedText.length;
 
   if (isSucceeded) {
-    const rows = toTranslate.map((word, i) => ({ key: word, val: translations[i] }));
+    const rows = toTranslate.map((word, i) => ({
+      key: word,
+      val: translations[i],
+      wiktionary: wiktionaryResults.get(word),
+    }));
     showLookupPopup(rows, selectedTextStartIndex, selectedTextEndIndex, appendTarget);
   } else {
     showLookupPopup(

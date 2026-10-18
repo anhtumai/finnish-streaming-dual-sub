@@ -146,7 +146,8 @@ async function translateTextsWithErrorHandlingWithGoogleTranslate(
     const results = await Promise.all(
       rawSubtitleFinnishTexts.map((text) => translateTextWithGoogleTranslate(text, tl, context))
     );
-    return [true, results];
+    // Mark Google translations so users can tell them apart from DeepL ones
+    return [true, results.map((result) => `${result} (by Google)`)];
   } catch (error) {
     if (error instanceof GoogleTranslateError) {
       return [false, getGoogleTranslateErrorMessage(error.status)];

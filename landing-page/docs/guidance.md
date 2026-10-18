@@ -102,7 +102,7 @@ Yes, it takes 5-10 minutes for one-time setup, but you get premium quality witho
 
 🎉 That's it! Your extension is now ready to provide high-quality translations.
 
-💡 **Watched some episodes before adding your key?** The extension saves translations on your computer, so it doesn't need to translate the same episode twice. That means episodes you watched before will still show the old Google Translate subtitles. To get DeepL subtitles for them, open the episode and click the reload icon in the video player.
+💡 **Watched some episodes before adding your key?** The extension saves translations on your computer, so it doesn't need to translate the same episode twice. That means episodes you watched before will still show the old Google Translate subtitles (the ones ending with "(by Google)"). To get DeepL subtitles for them, open the episode and click the reload icon in the video player.
 
 📚 Need more help? View the [official DeepL guide](https://support.deepl.com/hc/en-us/articles/360020695820-API-key-for-DeepL-API)
 

@@ -15,6 +15,10 @@ Hover over a blurred subtitle to reveal it temporarily.
 `Select text in a subtitle` and `right click` to get an instant in-page lookup without leaving the video.
 This will give you a word-by-word translation, suitable for beginners who cannot guess the meaning based on context yet.
 
+:::note
+The lookup can take a bit of time. Please wait up to 5 seconds for the result to appear.
+:::
+
 <img src={require('@site/static/img/features/word-lookup-open.png').default} alt="Word lookup popup open" style={{maxWidth: '100%', borderRadius: '8px', border: '1px solid #404040'}} />
 
 <img src={require('@site/static/img/features/word-lookup-explanation.png').default} alt="Word lookup popup explanation" style={{maxWidth: '100%', borderRadius: '8px', border: '1px solid #404040'}} />

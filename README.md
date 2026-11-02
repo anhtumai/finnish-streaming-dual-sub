@@ -1,6 +1,6 @@
 # Learn Finnish - Dual Subtitles for Finnish Streaming
 
-A Chrome extension that adds dual subtitles to YLE Areena and Ruutu.fi videos, helping you learn Finnish through immersion by displaying Finnish subtitles alongside translations in your preferred language.
+A Chrome extension that adds dual subtitles to YLE Areena, Yle Selkouutiset and Ruutu.fi videos, helping you learn Finnish through immersion by displaying Finnish subtitles alongside translations in your preferred language.
 
 Check [project video demo](https://www.youtube.com/watch?v=O3B7BCvd99Y)
 
@@ -32,7 +32,7 @@ This extension is my plan to reach the next level, where you can expose to authe
 
 ## How It Works
 
-1. You watch videos on YLE Areena or Ruutu.fi with Finnish subtitles enabled
+1. You watch videos on YLE Areena, [Yle Selkouutiset](https://yle.fi/selkouutiset) or Ruutu.fi with Finnish subtitles enabled
 2. The extension intercepts Finnish subtitle text
 3. Text is translated — via DeepL if you have a key set up, otherwise via Google Translate
 4. Translations are cached locally in IndexedDB for 365 days

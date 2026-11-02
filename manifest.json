@@ -13,7 +13,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://areena.yle.fi/*"],
+      "matches": ["https://areena.yle.fi/*", "https://yle.fi/selkouutiset*", "https://yle.fi/a/*"],
       "run_at": "document_end",
       "js": ["main/utils/database.js", "main/utils/utils.js", "main/platform/yle/contentscript.js", "main/background/inject.js"],
       "css": ["main/platform/yle/styles.css"]
@@ -30,7 +30,7 @@
   "web_accessible_resources": [
     {
       "resources": ["main/background/injected.js"],
-      "matches": ["https://areena.yle.fi/*", "https://www.ruutu.fi/*"]
+      "matches": ["https://areena.yle.fi/*", "https://yle.fi/*", "https://www.ruutu.fi/*"]
     }
   ],
   "action": {
